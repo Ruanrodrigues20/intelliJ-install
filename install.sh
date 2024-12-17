@@ -1,20 +1,36 @@
 #!/bin/bash
 
 
-# Baixar a última versão do IntelliJ IDEA Ultimate
-curl -L -O https://download-cdn.jetbrains.com/idea/ideaIU-2024.3.1.tar.gz
+if [ -z "$1" ]; then
+    echo "Nenhuma versão fornecida. Usando a versão padrão."
+    LATEST_VERSION="2024.3.1"  # Versão padrão
+else
+    LATEST_VERSION="$1" 
+fi
+
+echo "Instalando IntelliJ IDEA versão: ${LATEST_VERSION}"
+
+
+# URL base para o download
+BASE_URL="https://download-cdn.jetbrains.com/idea/"
+
+# Baixar a versão específica
+DOWNLOAD_URL="${BASE_URL}ideaIU-${LATEST_VERSION}.tar.gz"
+echo "Baixando IntelliJ IDEA versão ${LATEST_VERSION}..."
+
+curl -L -O "$DOWNLOAD_URL"
 
 # Verificar se o download foi concluído
-if [ ! -f ideaIU-2024.3.1.tar.gz ]; then
+if [ ! -f "ideaIU-${LATEST_VERSION}.tar.gz" ]; then
     echo "Erro: Download falhou. Verifique sua conexão ou o link."
     exit 1
 fi
 
 # Extrair o arquivo tar.gz
-tar -xvzf ideaIU-*
+tar -xvzf "ideaIU-${LATEST_VERSION}.tar.gz"
 
 # Renomear a pasta extraída para 'idea'
-mv idea-* idea
+mv "ideaIU-${LATEST_VERSION}" idea
 
 # Mover a pasta para o diretório /opt
 sudo mv idea /opt/intellij-idea
@@ -25,7 +41,7 @@ sudo ln -s /opt/intellij-idea/bin/idea.sh /usr/local/bin/idea
 # Garantir que o arquivo tenha permissões executáveis
 sudo chmod +x /usr/local/bin/idea
 
-# Criar arquivo .desktop para menu de aplicações
+# Criar arquivo .desktop para menu de aplicativos
 sudo bash -c 'cat > /usr/share/applications/intellij-idea.desktop <<EOF
 [Desktop Entry]
 Name=IntelliJ IDEA
@@ -43,6 +59,7 @@ sudo update-desktop-database
 
 # Limpeza do arquivo baixado
 echo "Limpando arquivos temporários..."
-rm ideaIU-*.tar.gz
+rm "ideaIU-${LATEST_VERSION}.tar.gz"
 
 echo "Instalação concluída! Você pode iniciar o IntelliJ IDEA com o comando 'idea' ou pelo menu de aplicativos."
+
