@@ -47,12 +47,12 @@ Este repositório contém dois scripts Bash para **instalar** e **remover** o In
 
 2. Dê permissão de execução ao script:
    ```bash
-   chmod +x remover_intellij.sh
+   chmod +x unistall.sh*
    ```
 
 3. Execute o script:
    ```bash
-   ./remover_intellij.sh
+   ./unistall.sh*
    ```
 
 4. **Pronto!** O IntelliJ IDEA será removido completamente, incluindo:
