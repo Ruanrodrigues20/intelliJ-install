@@ -3,7 +3,7 @@
 
 if [ -z "$1" ]; then
     echo "Nenhuma versão fornecida. Usando a versão padrão."
-    LATEST_VERSION="2024.3.1"  # Versão padrão
+    LATEST_VERSION="2024.3.1.1"  # Versão padrão
 else
     LATEST_VERSION="$1" 
 fi
@@ -30,7 +30,7 @@ fi
 tar -xvzf "ideaIU-${LATEST_VERSION}.tar.gz"
 
 # Renomear a pasta extraída para 'idea'
-mv "ideaIU-${LATEST_VERSION}" idea
+mv idea-* idea
 
 # Mover a pasta para o diretório /opt
 sudo mv idea /opt/intellij-idea
