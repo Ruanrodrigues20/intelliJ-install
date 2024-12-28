@@ -107,7 +107,7 @@ Este repositório contém dois scripts Bash para **instalar** e **remover** o In
 
 ## 🧑‍💻 Contribuição
 
-Sinta-se à vontade para abrir issues ou pull requests para melhorias nos scripts.
+Sinta-se à vontade para abrir issues ou pull requests para melhorias no script.
 
 ---
 
