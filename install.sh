@@ -1,65 +1,65 @@
 #!/bin/bash
 
-
-if [ -z "$1" ]; then
-    echo "Nenhuma versão fornecida. Usando a versão padrão."
-    LATEST_VERSION="2025.1.1.1"  # Versão padrão
-else
-    LATEST_VERSION="$1" 
-fi
-
-echo "Instalando IntelliJ IDEA versão: ${LATEST_VERSION}"
-
-
-# URL base para o download
+# ===== CONFIG =====
+DEFAULT_VERSION="2025.1.1.1"
 BASE_URL="https://download-cdn.jetbrains.com/idea/"
 
-# Baixar a versão específica
-DOWNLOAD_URL="${BASE_URL}ideaIU-${LATEST_VERSION}.tar.gz"
-echo "Baixando IntelliJ IDEA versão ${LATEST_VERSION}..."
-
-curl -L -O "$DOWNLOAD_URL"
-
-# Verificar se o download foi concluído
-if [ ! -f "ideaIU-${LATEST_VERSION}.tar.gz" ]; then
-    echo "Erro: Download falhou. Verifique sua conexão ou o link."
-    exit 1
+# ===== DETECTAR VERSÃO =====
+if [ -z "$1" ]; then
+    echo "Nenhuma versão fornecida. Usando versão padrão: $DEFAULT_VERSION"
+    VERSION="$DEFAULT_VERSION"
+else
+    VERSION="$1"
 fi
 
-# Extrair o arquivo tar.gz
-tar -xvzf "ideaIU-${LATEST_VERSION}.tar.gz"
+echo "Instalando IntelliJ IDEA versão: $VERSION"
 
-# Renomear a pasta extraída para 'idea'
+# ===== BAIXAR =====
+DOWNLOAD_URL="${BASE_URL}ideaIU-${VERSION}.tar.gz"
+echo "Baixando: $DOWNLOAD_URL"
+curl -L -O "$DOWNLOAD_URL" || { echo "Erro no download"; exit 1; }
+
+# ===== EXTRAIR =====
+tar -xvzf "ideaIU-${VERSION}.tar.gz" || { echo "Erro ao extrair"; exit 1; }
 mv idea-* idea
 
-# Mover a pasta para o diretório /opt
+# ===== INSTALAR =====
+sudo rm -rf /opt/intellij-idea
 sudo mv idea /opt/intellij-idea
-
-# Criar link simbólico para o comando 'idea'
-sudo ln -s /opt/intellij-idea/bin/idea.sh /usr/local/bin/idea
-
-# Garantir que o arquivo tenha permissões executáveis
+sudo ln -sf /opt/intellij-idea/bin/idea.sh /usr/local/bin/idea
 sudo chmod +x /usr/local/bin/idea
 
-# Criar arquivo .desktop para menu de aplicativos
+# ===== CRIAR .desktop =====
 sudo bash -c 'cat > /usr/share/applications/intellij-idea.desktop <<EOF
 [Desktop Entry]
 Name=IntelliJ IDEA
-Comment=Edição Comunitária do IntelliJ IDEA
+Comment=JetBrains IntelliJ IDEA Ultimate
 Exec=/opt/intellij-idea/bin/idea.sh %f
-Icon=/opt/intellij-idea/bin/idea.png
+Icon=intellij-idea
 Terminal=false
 Type=Application
-Categories=Desenvolvimento;IDE;
+Categories=Development;IDE;
 StartupWMClass=jetbrains-idea
 EOF'
 
-# Atualizar banco de dados do menu de aplicativos
 sudo update-desktop-database
 
-# Limpeza do arquivo baixado
-echo "Limpando arquivos temporários..."
-rm "ideaIU-${LATEST_VERSION}.tar.gz"
+# ===== ÍCONE DINÂMICO =====
+THEME=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
 
-echo "Instalação concluída! Você pode iniciar o IntelliJ IDEA com o comando 'idea' ou pelo menu de aplicativos."
+# Copiar para o tema atual
+mkdir -p ~/.local/share/icons/$THEME/scalable/apps
+cp /opt/intellij-idea/bin/idea.svg ~/.local/share/icons/$THEME/scalable/apps/intellij-idea.svg 2>/dev/null || true
+gtk-update-icon-cache -f -t ~/.local/share/icons/$THEME 2>/dev/null || true
 
+# Copiar para fallback hicolor
+sudo mkdir -p /usr/share/icons/hicolor/scalable/apps
+sudo cp /opt/intellij-idea/bin/idea.svg /usr/share/icons/hicolor/scalable/apps/intellij-idea.svg
+sudo gtk-update-icon-cache -f -t /usr/share/icons/hicolor
+
+# ===== LIMPEZA =====
+rm "ideaIU-${VERSION}.tar.gz"
+
+echo "Instalação concluída!"
+echo "→ Ícone integrado ao tema atual ($THEME)"
+echo "→ Fallback configurado no tema 'hicolor'"
