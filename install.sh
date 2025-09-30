@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ===== CONFIG =====
-DEFAULT_VERSION="2025.1.1.1"
+DEFAULT_VERSION="2025.2.1"
 BASE_URL="https://download-cdn.jetbrains.com/idea/"
 
 # ===== DETECTAR VERSÃO =====
@@ -26,7 +26,9 @@ mv idea-* idea
 # ===== INSTALAR =====
 sudo rm -rf /opt/intellij-idea
 sudo mv idea /opt/intellij-idea
-sudo ln -sf /opt/intellij-idea/bin/idea.sh /usr/local/bin/idea
+
+# Cria link simbólico usando o launcher nativo
+sudo ln -sf /opt/intellij-idea/bin/idea /usr/local/bin/idea
 sudo chmod +x /usr/local/bin/idea
 
 # ===== CRIAR .desktop =====
@@ -34,7 +36,7 @@ sudo bash -c 'cat > /usr/share/applications/intellij-idea.desktop <<EOF
 [Desktop Entry]
 Name=IntelliJ IDEA
 Comment=JetBrains IntelliJ IDEA Ultimate
-Exec=/opt/intellij-idea/bin/idea.sh %f
+Exec=/opt/intellij-idea/bin/idea %f
 Icon=intellij-idea
 Terminal=false
 Type=Application
