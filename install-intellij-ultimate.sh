@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ===== CONFIG =====
-DEFAULT_VERSION="2025.2.4"
+DEFAULT_VERSION="2025.3"
 BASE_URL="https://download-cdn.jetbrains.com/idea/"
 
 # ===== DETECTAR VERSÃO =====
