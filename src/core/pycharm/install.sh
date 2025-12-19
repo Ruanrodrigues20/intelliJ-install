@@ -1,40 +1,35 @@
 #!/bin/bash
 
 # ===== CONFIG =====
-DEFAULT_VERSION="2025.3"
-BASE_URL="https://download-cdn.jetbrains.com/python/"
+VERSION=$(python3 ./src/bin/get_version.py PCP)
+DOWNLOAD_URL="https://download-cdn.jetbrains.com/python/pycharm-professional-${VERSION}.tar.gz"
 
-# ===== DETECTAR VERSÃO =====
-if [ -z "$1" ]; then
-    echo "Nenhuma versão fornecida. Usando versão padrão: $DEFAULT_VERSION"
-    VERSION="$DEFAULT_VERSION"
-else
-    VERSION="$1"
-fi
+echo "Installing PyCharm Professional version: $VERSION"
 
-echo "Instalando PyCharm Pro versão: $VERSION"
+# ===== DOWNLOAD =====
+mkdir -p temp
+cd temp
+echo "Downloading: $DOWNLOAD_URL"
+curl -L -O "$DOWNLOAD_URL" || { echo "Download failed"; exit 1; }
 
-# ===== BAIXAR =====
-DOWNLOAD_URL="${BASE_URL}pycharm-professional-${VERSION}.tar.gz"
-echo "Baixando: $DOWNLOAD_URL"
-#curl -L -O "$DOWNLOAD_URL" || { echo "Erro no download"; exit 1; }
-
-# ===== EXTRAIR =====
-#tar -xvzf "pycharm-professional-${VERSION}.tar.gz" || { echo "Erro ao extrair"; exit 1; }
+# ===== EXTRACT =====
+echo "Extracting..."
+tar -xvzf "pycharm-professional-${VERSION}.tar.gz" || { echo "Extraction failed"; exit 1; }
 
 EXTRACTED_DIR=$(find . -maxdepth 1 -type d -name "pycharm-*" | head -n 1)
 mv "$EXTRACTED_DIR" pycharm
 
-
-# ===== INSTALAR =====
+# ===== INSTALL =====
 sudo rm -rf /opt/pycharm
 sudo mv pycharm /opt/pycharm
+cd ..
+rm -rf temp
 
-# Link simbólico
+# Create symbolic link
 sudo ln -sf /opt/pycharm/bin/pycharm.sh /usr/local/bin/pycharm
 sudo chmod +x /usr/local/bin/pycharm
 
-# ===== CRIAR .desktop =====
+# ===== CREATE .desktop FILE =====
 sudo bash -c 'cat > /usr/share/applications/pycharm-pro.desktop <<EOF
 [Desktop Entry]
 Name=PyCharm Pro
@@ -49,24 +44,20 @@ EOF'
 
 sudo update-desktop-database
 
-# ===== ÍCONE DINÂMICO =====
+# ===== DYNAMIC ICON =====
 THEME=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
-
-# Copiar para o tema atual
 mkdir -p ~/.local/share/icons/$THEME/scalable/apps
 cp /opt/pycharm/bin/pycharm.svg ~/.local/share/icons/$THEME/scalable/apps/pycharm-pro.svg 2>/dev/null || true
 gtk-update-icon-cache -f -t ~/.local/share/icons/$THEME 2>/dev/null || true
 
-# Copiar para fallback hicolor
 sudo mkdir -p /usr/share/icons/hicolor/scalable/apps
 sudo cp /opt/pycharm/bin/pycharm.svg /usr/share/icons/hicolor/scalable/apps/pycharm-pro.svg
 sudo gtk-update-icon-cache -f -t /usr/share/icons/hicolor
 
+# ===== CLEANUP =====
+rm -f "pycharm-professional-${VERSION}.tar.gz"
 
-# ===== LIMPEZA =====
-rm pycharm-*
-
-echo "Instalação concluída!"
-echo "→ Nome exibido: PyCharm Pro"
-echo "→ Ícone integrado ao tema atual ($THEME)"
-echo "→ Fallback configurado no tema 'hicolor'"
+echo "Installation completed!"
+echo "→ Display name: PyCharm Pro"
+echo "→ Icon integrated into current theme ($THEME)"
+echo "→ Fallback icon configured in 'hicolor' theme"

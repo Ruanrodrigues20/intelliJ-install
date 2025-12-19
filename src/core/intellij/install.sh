@@ -1,37 +1,36 @@
 #!/bin/bash
 
 # ===== CONFIG =====
-DEFAULT_VERSION="2025.3"
-BASE_URL="https://download-cdn.jetbrains.com/idea/"
+source ./src/dependices.sh
+export VERSION_IIU BASE_URL_JAVA DOWNLOAD_URL_INTELLIJ
 
-# ===== DETECTAR VERSÃO =====
-if [ -z "$1" ]; then
-    echo "Nenhuma versão fornecida. Usando versão padrão: $DEFAULT_VERSION"
-    VERSION="$DEFAULT_VERSION"
-else
-    VERSION="$1"
-fi
+VERSION=$VERSION_IIU
+DOWNLOAD_URL=$DOWNLOAD_URL_INTELLIJ
 
-echo "Instalando IntelliJ IDEA versão: $VERSION"
+echo "Installing IntelliJ IDEA version: $VERSION"
 
-# ===== BAIXAR =====
-DOWNLOAD_URL="${BASE_URL}ideaIU-${VERSION}.tar.gz"
-echo "Baixando: $DOWNLOAD_URL"
-curl -L -O "$DOWNLOAD_URL" || { echo "Erro no download"; exit 1; }
+# ===== DOWNLOAD =====
+echo "Downloading: $DOWNLOAD_URL_INTELLIJ"
+mkdir -p temp
+cd temp
+curl -L -O "$DOWNLOAD_URL_INTELLIJ" || { echo "Download failed"; exit 1; }
 
-# ===== EXTRAIR =====
-tar -xvzf "ideaIU-${VERSION}.tar.gz" || { echo "Erro ao extrair"; exit 1; }
+# ===== EXTRACT =====
+tar -xvzf "ideaIU-${VERSION}.tar.gz" || { echo "Extraction failed"; exit 1; }
 mv idea-* idea
 
-# ===== INSTALAR =====
+# ===== INSTALL =====
 sudo rm -rf /opt/intellij-idea
 sudo mv idea /opt/intellij-idea
 
-# Cria link simbólico usando o launcher nativo
+cd ..
+rm -rf temp
+
+# Create symbolic link for native launcher
 sudo ln -sf /opt/intellij-idea/bin/idea /usr/local/bin/idea
 sudo chmod +x /usr/local/bin/idea
 
-# ===== CRIAR .desktop =====
+# ===== CREATE .desktop FILE =====
 sudo bash -c 'cat > /usr/share/applications/intellij-idea.desktop <<EOF
 [Desktop Entry]
 Name=IntelliJ IDEA
@@ -46,22 +45,22 @@ EOF'
 
 sudo update-desktop-database
 
-# ===== ÍCONE DINÂMICO =====
+# ===== DYNAMIC ICON =====
 THEME=$(gsettings get org.gnome.desktop.interface icon-theme | tr -d "'")
 
-# Copiar para o tema atual
+# Copy to current theme
 mkdir -p ~/.local/share/icons/$THEME/scalable/apps
 cp /opt/intellij-idea/bin/idea.svg ~/.local/share/icons/$THEME/scalable/apps/intellij-idea.svg 2>/dev/null || true
 gtk-update-icon-cache -f -t ~/.local/share/icons/$THEME 2>/dev/null || true
 
-# Copiar para fallback hicolor
+# Copy to fallback hicolor theme
 sudo mkdir -p /usr/share/icons/hicolor/scalable/apps
 sudo cp /opt/intellij-idea/bin/idea.svg /usr/share/icons/hicolor/scalable/apps/intellij-idea.svg
 sudo gtk-update-icon-cache -f -t /usr/share/icons/hicolor
 
-# ===== LIMPEZA =====
+# ===== CLEANUP =====
 rm "ideaIU-${VERSION}.tar.gz"
 
-echo "Instalação concluída!"
-echo "→ Ícone integrado ao tema atual ($THEME)"
-echo "→ Fallback configurado no tema 'hicolor'"
+echo "Installation completed!"
+echo "→ Icon integrated into current theme ($THEME)"
+echo "→ Fallback icon configured in 'hicolor' theme"
