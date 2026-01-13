@@ -10,7 +10,7 @@ export INSTALL_DIR="/opt/pycharm"
 export BIN_NAME="pycharm-professional.sh"
 export ICON_NAME="pycharm-professional"
 export STARTUP_WMCLASS="pycharm-professional"
-export DOWNLOAD_URL="$(python src/utils/py/get_latest_version.py PY)"
+export DOWNLOAD_URL="$(python src/utils/py/get_latest_version.py PCP)"
 
 # ===============================
 # Run generic installer
