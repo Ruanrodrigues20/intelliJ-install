@@ -7,9 +7,12 @@ set -euo pipefail
 export APP_NAME="PyCharm Professional"
 export APP_ID="pycharm"
 export INSTALL_DIR="/opt/pycharm"
+export BIN_NAME="pycharm-professional.sh"
+export ICON_NAME="pycharm-professional"
+export STARTUP_WMCLASS="pycharm-professional"
+export DOWNLOAD_URL="$(python src/utils/py/get_latest_version.py PY)"
 
-# Caminho absoluto do script
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Rodar desinstalador genérico
-bash "$SCRIPT_DIR/../lib/uninstall_common.sh"
+# ===============================
+# Run generic installer
+# ===============================
+bash "src/lib/install_common.sh"

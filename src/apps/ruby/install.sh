@@ -11,11 +11,8 @@ export BIN_NAME="rubymine.sh"
 export ICON_NAME="rubymine"
 export STARTUP_WMCLASS="jetbrains-rubymine"
 
-# Caminho absoluto do script
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-UTILS_PY="$SCRIPT_DIR/../utils/py/get_latest_version.py"
+UTILS_PY="src/utils/py/get_latest_version.py"
 
-# Gerar a URL mais recente
 export DOWNLOAD_URL="$(python3 "$UTILS_PY" RM)"
 
 # ===============================

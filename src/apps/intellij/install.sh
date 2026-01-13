@@ -10,10 +10,9 @@ export INSTALL_DIR="/opt/intellij-idea"
 export BIN_NAME="idea"
 export ICON_NAME="intellij-idea"
 export STARTUP_WMCLASS="jetbrains-idea"
-export DOWNLOAD_URL="$(python ../../utils/py/get_latest_version.py IIU)"
+export DOWNLOAD_URL="$(python src/utils/py/get_latest_version.py IIU)"
 
 # ===============================
 # Run generic installer
 # ===============================
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-bash "$SCRIPT_DIR/../lib/install_common.sh"
+bash "src/lib/install_common.sh"

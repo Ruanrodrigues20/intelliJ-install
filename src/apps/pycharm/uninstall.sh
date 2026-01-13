@@ -11,5 +11,4 @@ export INSTALL_DIR="/opt/pycharm"
 # ===============================
 # Run generic uninstaller
 # ===============================
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-bash "$SCRIPT_DIR/../lib/uninstall_common.sh"
+bash "src/lib/uninstall_common.sh"
