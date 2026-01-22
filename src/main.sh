@@ -3,6 +3,9 @@
 
 set -euo pipefail
 
+
+
+
 # ===============================
 # Colors & icons
 # ===============================
@@ -22,6 +25,21 @@ ICON_LOCK="🔐"
 ICON_BOX="📦"
 ICON_RUN="🚀"
 ICON_IDE="💡"
+
+
+# ===============================
+# Bootstrap dependencies
+# ===============================
+DEPS_SCRIPT="src/utils/dependencies/install_dependencies.sh"
+
+if [[ -x "$DEPS_SCRIPT" ]]; then
+    echo -e "${CYAN}${ICON_BOX}${RESET} Checking and installing dependencies..."
+    bash "$DEPS_SCRIPT"
+else
+    echo -e "${YELLOW}${ICON_WARN}${RESET} Dependency installer not found: $DEPS_SCRIPT"
+fi
+
+
 
 # ===============================
 # Sudo auth (safe + keep alive)

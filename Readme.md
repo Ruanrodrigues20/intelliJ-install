@@ -1,118 +1,180 @@
-# 📋 Instalação e Remoção do IntelliJ IDEA Ultimate
+# 📋 JetBrains IDE Manager – Install & Remove JetBrains IDEs on Linux
 
-Este repositório contém dois scripts Bash para **instalar** e **remover** o IntelliJ IDEA Ultimate no sistema Linux.
+This repository provides a Bash-based **JetBrains IDE Manager** to easily **install** and **uninstall** JetBrains IDEs on Linux systems using a single interactive interface.
 
----
+Supported IDEs include:
 
-## 🛠️ Scripts
+* IntelliJ IDEA Ultimate
+* PyCharm Professional
+* GoLand
+* RubyMine
 
-1. **install.sh**: Baixa, instala e configura o IntelliJ IDEA Ultimate.
-2. **uninstall.sh**: Remove completamente o IntelliJ IDEA Ultimate do sistema.
-
----
-
-## 📥 Instalação
-
-### Requisitos
-
-- Sistema operacional Linux (Ubuntu/Debian recomendado).
-- Permissões de superusuário (`sudo`).
-- Conexão com a internet.
-
-### Novidades
-
-- **Escolha de versão**: Agora, é possível escolher a versão específica do IntelliJ IDEA a ser instalada. Ao rodar o script de instalação, você pode passar um parâmetro com a versão desejada. Caso contrário, o script instalará a versão mais recente disponível.
-
-### Uso do Script de Instalação
-
-1. Baixe o script `install.sh` ou copie o conteúdo para um arquivo no seu sistema.
-
-2. Dê permissão de execução ao script:
-   ```bash
-   chmod +x install.sh
-   ```
-
-3. Execute o script para instalar a versão padrão (a mais recente):
-   ```bash
-   ./install.sh
-   ```
-
-   Ou, se você deseja instalar uma versão específica, execute o script passando o número da versão como parâmetro:
-   ```bash
-   ./install.sh 2024.3.1
-   ```
-
-   Pronto! O IntelliJ IDEA será instalado em `/opt/intellij-idea`. Você pode iniciá-lo:
-   - Pelo terminal, com o comando: `idea`
-   - Pelo menu de aplicativos, buscando IntelliJ IDEA.
+You can install, uninstall, or manage them individually or all at once.
 
 ---
 
-## 🗑️ Remoção
+## 🛠️ Features
 
-### Uso do Script de Remoção
-
-1. Baixe o script `uninstall.sh` ou copie o conteúdo para um arquivo no seu sistema.
-
-2. Dê permissão de execução ao script:
-   ```bash
-   chmod +x uninstall.sh
-   ```
-
-3. Execute o script:
-   ```bash
-   ./uninstall.sh
-   ```
-
-   Pronto! O IntelliJ IDEA será removido completamente, incluindo:
-   - Diretório de instalação (`/opt/intellij-idea`).
-   - Link simbólico em `/usr/local/bin/idea`.
-   - Arquivo do menu de aplicativos (.desktop).
+* Interactive terminal menu (Install / Uninstall / Exit)
+* Choose which IDE(s) to process
+* Sudo authentication with keep-alive
+* Colored output + spinner UI
+* Modular structure (`apps/<ide>/install.sh`, `apps/<ide>/uninstall.sh`)
 
 ---
 
-## ⚙️ Detalhes dos Scripts
+## 📥 Requirements
 
-### Script de Instalação (install.sh)
+* Linux (Ubuntu/Debian recommended)
+* `sudo` privileges
+* Internet connection
+* `curl`, `tar`, `gtk-update-icon-cache`, `update contando?
 
-- Baixa a última versão do IntelliJ IDEA Ultimate ou uma versão específica (caso seja passada como parâmetro).
-- Extrai o arquivo `.tar.gz` e move o conteúdo para `/opt/intellij-idea`.
-- Cria um link simbólico em `/usr/local/bin/idea` para facilitar a execução.
-- Adiciona uma entrada ao menu de aplicativos (arquivo .desktop).
-- Atualiza o banco de dados do menu.
-- Remove o arquivo baixado após a instalação.
+Wait finish doc.
 
-### Script de Remoção (uninstall.sh)
+Continue.
 
-- Remove o diretório de instalação em `/opt/intellij-idea`.
-- Apaga o link simbólico em `/usr/local/bin/idea`.
-- Remove o arquivo .desktop do menu de aplicativos.
-- Atualiza o banco de dados do menu.
+
+Perfeito, Ruan 😄
+Aqui está a **versão atualizada em inglês**, já alinhada com o conceito do teu **JetBrains IDE Manager (`src/main.sh`)** 👇
 
 ---
 
-## 🚀 Comandos Úteis
+# 📋 JetBrains IDE Manager – Install & Remove JetBrains IDEs on Linux
 
-- Iniciar o IntelliJ IDEA:
-  ```bash
-  idea
-  ```
+This repository provides a Bash-based **JetBrains IDE Manager** to easily **install** and **uninstall** JetBrains IDEs on Linux systems using a single interactive interface.
 
-- Verificar se o IntelliJ IDEA está instalado:
-  ```bash
-  ls /opt/intellij-idea
-  ```
+Supported IDEs:
 
----
+* IntelliJ IDEA Ultimate
+* PyCharm Professional
+* GoLand
+* RubyMine
 
-## 🧑‍💻 Contribuição
-
-Sinta-se à vontade para abrir issues ou pull requests para melhorias no script.
+You can manage them individually or all at once.
 
 ---
 
-## 📄 Licença
+## 🛠️ Features
 
-Este projeto está licenciado sob a MIT License.
+* Interactive terminal menu (Install / Uninstall / Exit)
+* Choose which IDE(s) to process
+* Sudo authentication with keep-alive
+* Modular structure:
+  `apps/<ide>/install.sh` and `apps/<ide>/uninstall.sh`
+* Colored output, icons and spinner UI
+* Automatic `.desktop` integration and command-line launchers
 
-Desenvolvido para facilitar a instalação e remoção do IntelliJ IDEA em sistemas Linux! 🚀
+---
+
+## 📥 Requirements
+
+* Linux (Ubuntu/Debian recommended)
+* `sudo` privileges
+* Internet connection
+* Tools: `bash`, `curl`, `tar`, `gtk-update-icon-cache`, `update-desktop-database`
+
+---
+
+## 🚀 Usage
+
+### 1️⃣ Clone the repository
+
+```bash
+git clone https://github.com/your-user/jetbrains-ide-manager.git
+cd jetbrains-ide-manager
+```
+
+### 2️⃣ Give execution permission
+
+```bash
+chmod +x run.sh
+```
+
+### 3️⃣ Run the manager
+
+```bash
+.main.sh
+```
+
+---
+
+## 🎛️ Interface Flow
+
+1. Choose an action:
+
+   * Install
+   * Uninstall
+   * Exit
+
+2. Choose the IDE(s):
+
+   * IntelliJ Ultimate
+   * PyCharm Pro
+   * GoLand
+   * RubyMine
+   * PyCharm + IntelliJ
+   * All
+
+3. The selected scripts will run automatically.
+
+---
+
+## 📂 Project Structure
+
+```text
+src/
+ ├── main.sh          # Main interactive manager
+ └── apps/
+     ├── intellij/
+     │   ├── install.sh
+     │   └── uninstall.sh
+     ├── pycharm/
+     │   ├── install.sh
+     │   └── uninstall.sh
+     ├── goland/
+     │   ├── install.sh
+     │   └── uninstall.sh
+     └── ruby/
+         ├── install.sh
+         └── uninstall.sh
+```
+
+---
+
+## 🗑️ Uninstalling
+
+Just run:
+
+```bash
+./src/main.sh
+```
+
+→ Choose **Uninstall**
+→ Select the IDE(s) you want to remove.
+
+The script removes:
+
+* `/opt/<ide>`
+* `/usr/local/bin/<command>`
+* `.desktop` menu entries
+* Icons from the system
+
+---
+
+## 🧑‍💻 Contributing
+
+Feel free to open issues or pull requests with improvements, new IDEs, or UI enhancements.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE.txt).
+
+---
+
+If you want, next I can:
+✔ Add version selection per IDE
+✔ Add logging (`logs/manager.log`)
+✔ Add auto-update support 😎
