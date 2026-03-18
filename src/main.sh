@@ -3,9 +3,6 @@
 
 set -euo pipefail
 
-
-
-
 # ===============================
 # Colors & icons
 # ===============================
@@ -26,7 +23,6 @@ ICON_BOX="📦"
 ICON_RUN="🚀"
 ICON_IDE="💡"
 
-
 # ===============================
 # Bootstrap dependencies
 # ===============================
@@ -39,8 +35,6 @@ else
     echo -e "${YELLOW}${ICON_WARN}${RESET} Dependency installer not found: $DEPS_SCRIPT"
 fi
 
-
-
 # ===============================
 # Sudo auth (safe + keep alive)
 # ===============================
@@ -48,17 +42,11 @@ if sudo -n true 2>/dev/null; then
     echo -e "${GREEN}${ICON_OK}${RESET} Sudo already authenticated."
 else
     echo -e "${YELLOW}${ICON_LOCK}${RESET} Sudo authentication required."
-    sudo -v || {
-        echo -e "${RED}${ICON_ERR}${RESET} Sudo authentication failed."
-        exit 1
-    }
+    sudo -v || { echo -e "${RED}${ICON_ERR}${RESET} Sudo authentication failed."; exit 1; }
 fi
 
 # Keep sudo alive
-while true; do
-    sudo -n true
-    sleep 60
-done 2>/dev/null &
+while true; do sudo -n true; sleep 60; done 2>/dev/null &
 SUDO_KEEPALIVE_PID=$!
 trap 'kill $SUDO_KEEPALIVE_PID' EXIT
 
@@ -89,7 +77,6 @@ spinner() {
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APPS_DIR="$SCRIPT_DIR/apps"
 
-
 # ===============================
 # UI Header
 # ===============================
@@ -101,42 +88,65 @@ echo "╚═══════════════════════�
 echo -e "${RESET}"
 
 # ===============================
-# Action menu
+# Parse CLI arguments
 # ===============================
-echo -e "${ICON_RUN} ${BOLD}Choose an action:${RESET}"
-select ACTION_TYPE in "Install" "Uninstall" "Exit"; do
-    case $REPLY in
-        1) ACTION_TYPE="install"; break ;;
-        2) ACTION_TYPE="unistall"; break ;; # typo mantido
-        3) echo -e "${YELLOW}Bye 👋${RESET}"; exit 0 ;;
-        *) echo -e "${RED}${ICON_WARN} Invalid option.${RESET}" ;;
-    esac
-done
+ACTION_TYPE=""
+IDES=()
+
+if [[ $# -ge 1 ]]; then
+    ACTION_TYPE="$1"
+    shift
+    if [[ $# -ge 1 ]]; then
+        # Passou IDEs diretamente
+        for ide in "$@"; do
+            case "$ide" in
+                intellij|pycharm|goland|ruby) IDES+=("$ide") ;;
+                *) echo -e "${RED}${ICON_WARN} Unknown IDE: $ide${RESET}" ;;
+            esac
+        done
+    else
+        # Nenhuma IDE passada, abre menu interativo
+        ACTION_TYPE=""
+    fi
+fi
 
 # ===============================
-# IDE menu
+# Interactive menu if no args
 # ===============================
-echo
-echo -e "${ICON_IDE} ${BOLD}Which IDE do you want to process?${RESET}"
-select IDE_OPTION in \
-    "IntelliJ Ultimate" \
-    "PyCharm Pro" \
-    "GoLand" \
-    "RubyMine" \
-    "PyCharm + IntelliJ" \
-    "All"; do
+if [[ -z "$ACTION_TYPE" || ${#IDES[@]} -eq 0 ]]; then
+    # Action menu
+    echo -e "${ICON_RUN} ${BOLD}Choose an action:${RESET}"
+    select ACTION in "Install" "Uninstall" "Exit"; do
+        case $REPLY in
+            1) ACTION_TYPE="install"; break ;;
+            2) ACTION_TYPE="uninstall"; break ;;
+            3) echo -e "${YELLOW}Bye 👋${RESET}"; exit 0 ;;
+            *) echo -e "${RED}${ICON_WARN} Invalid option.${RESET}" ;;
+        esac
+    done
 
-    case $REPLY in
-        1) IDES=(intellij) ;;
-        2) IDES=(pycharm) ;;
-        3) IDES=(goland) ;;
-        4) IDES=(ruby) ;;
-        5) IDES=(pycharm intellij) ;;
-        6) IDES=(intellij pycharm goland ruby) ;;
-        *) echo -e "${RED}${ICON_WARN} Invalid option.${RESET}"; continue ;;
-    esac
-    break
-done
+    # IDE menu
+    echo
+    echo -e "${ICON_IDE} ${BOLD}Which IDE do you want to process?${RESET}"
+    select IDE_OPTION in \
+        "IntelliJ Ultimate" \
+        "PyCharm Pro" \
+        "GoLand" \
+        "RubyMine" \
+        "PyCharm + IntelliJ" \
+        "All"; do
+        case $REPLY in
+            1) IDES=(intellij) ;;
+            2) IDES=(pycharm) ;;
+            3) IDES=(goland) ;;
+            4) IDES=(ruby) ;;
+            5) IDES=(pycharm intellij) ;;
+            6) IDES=(intellij pycharm goland ruby) ;;
+            *) echo -e "${RED}${ICON_WARN} Invalid option.${RESET}"; continue ;;
+        esac
+        break
+    done
+fi
 
 # ===============================
 # Runner

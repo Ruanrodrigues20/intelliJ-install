@@ -2,4 +2,4 @@
 set -euo pipefail
 
 # Run the main UI
-bash src/main.sh
+bash src/main.sh  install intellij pycharm
